@@ -20,8 +20,7 @@ The measure used is the Correlation coefficient (0-100% or 0-1).
 
 ![](https://github.com/etfovac/watermark/blob/master/2020-08-02_230949.png)
 
-References:
-
-https://www.researchgate.net/publication/343385316_Digital_Watermarking_-_Comparison_of_DCT_and_DWT_methods
-
-https://www.researchgate.net/publication/343385676_Digital_Watermarking_in_Wavelet_domain_-_Comparison_of_different_types_of_wavelets
+References:  
+<a href="https://www.researchgate.net/profile/Nikola_Jovanovic9">Nikola Jovanovic on ResearchGate</a>  
+<a href="https://www.researchgate.net/publication/343385316_Digital_Watermarking_-_Comparison_of_DCT_and_DWT_methods">Digital Watermarking – Comparison of DCT and DWT methods, ResearchGate</a>  
+<a href="https://www.researchgate.net/publication/343385676_Digital_Watermarking_in_Wavelet_domain_-_Comparison_of_different_types_of_wavelets">Digital Watermarking in Wavelet domain – Comparison of different types of wavelets, ResearchGate</a>
