@@ -1,4 +1,4 @@
-# DWM [![View Digital Watermarking – Comparison of DCT and DWT methods on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/78790-digital-watermarking-comparison-of-dct-and-dwt-methods) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com//etfovac/watermark/master/LICENSE.md) [![GitHub (pre-)release](https://img.shields.io/badge/release-1.0.1-yellow.svg)](https://github.com/etfovac/watermark/releases/tag/1.0.1)
+# DWM [![View Digital Watermarking – Comparison of DCT and DWT methods on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/78790-digital-watermarking-comparison-of-dct-and-dwt-methods) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/etfovac/watermark/blob/master/LICENSE) [![GitHub (pre-)release](https://img.shields.io/badge/release-1.0.1-yellow.svg)](https://github.com/etfovac/watermark/releases/tag/1.0.1)
 
 ### Keywords:
 
