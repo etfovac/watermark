@@ -1,39 +1,26 @@
 close all;  clc, clear variables
  
-%   UPRAVLJANJE PROGRAMOM VRSI SE SELEKTOVANJEM PONUDJENIH KORAKA.
-%   TREBA VODITI RACUNA O REDOSLEDU IZVRSAVANJA KORAKA. 
-%   TREBA SE DRZATI NUMERACIJE.
-%
-%   WATERMARKING - Oznacavanje slika (2009)
-%
-% 1. Ucitavanje intenzitetne slike bez ziga
-% 2. Ucitavanje ziga (binarne slike)
-% 3. Izbor transformacije (DCT ili Wavelet)
-% 4. Oznacavanje slike (ugradnja ziga u sliku)
-% 5. Napad na sliku
-% 6. Ucitavanje intenzitetne slike sa zigom
-% 7. Detekcija ziga (izdvajanje ziga iz slike)
-%(8)   KRAJ RADA
-%
-%   Slika koja se oznacava mora biti intenzitetna (grayscale).
-% Moze se uneti slika u boji koja ce biti pretvorena u grayscale sliku.
+% Ver.1.0 .
+% Use the simple Menu to control the program flow, but mind the order of the steps. 
+% Unmarked image has to be grayscale. If a color image is selected,  
+% it is coverted into grayscale image.
     
 global K dim_bloka Nivo faktor Vs Ss vis_ziga sir_ziga
 
-    korak = 0;
-    kraj = 8;
+    step = 0;
+    the_end = 8;
 
-while korak ~= kraj
+while step ~= the_end
     
-    korak = menu(' WATERMARKING - Oznacavanje slika (2009) ',...
-    '1.          Ucitavanje intenzitetne slike bez ziga ',...
-    '2.             Ucitavanje ziga (binarne slike)         ',...
-    '3.          Izbor transformacije (DCT ili Wavelet)',...
-    '4.   Oznacavanje slike (ugradnja ziga u sliku) ',...
-    '5.                    Napad na sliku                          ',...
-    '6.       Ucitavanje intenzitetne slike sa zigom   ',...
-    '7.       Detekcija ziga (izdvajanje ziga iz slike) ',...
-    ' KRAJ RADA ');
+    step = menu('Image Watermarking Procedure',...
+    '1. Read unmarked intensity image',...
+    '2. Read the watermark (binary image)',...
+    '3. Select transformation (DCT / DWT)',...
+    '4. Mark the image',...
+    '5. Attack/degrade the marked image',...
+    '6. Read a marked intensity image',...
+    '7. Detect and extract the watermark image',...
+    ' Exit ');
     
 
     K = 14;    % "Jacina ziga" u [%], tj. procenat promene koeficijenata
@@ -41,18 +28,18 @@ while korak ~= kraj
     Nivo = 3; % Nivo dekompozicije kod Wavelet transformacije
     % Nivo = round(log10(dim_bloka)/log10(2))
     
-    % 1. Ucitavanje intenzitetne (sive) slike ----------------------------
-    if korak == 1
-        ime_slike = 'lena_gray_512.tif';
-        %ime_slike = input('Unesite naziv originalne slike:   ');
-        orig_slika = imread(ime_slike);
-        if length(size(orig_slika)) ~= 2
+    % 1. Read unmarked intensity image ----------------------------
+    if step == 1
+        img_file = 'input\\lena_gray_512.tif';
+        %img_file = input('Unesite naziv originalne slike:   ');
+        Unmarked_image = imread(img_file);
+        if length(size(Unmarked_image)) ~= 2
             disp('Slika mora biti dimenzija MxN.');
-            orig_slika = rgb2gray(orig_slika);
+            Unmarked_image = rgb2gray(Unmarked_image);
             % Ulazne slike su intenzitetne slike.
         end
-        figure(1), imshow(orig_slika), title('Originalna slika')
-        [slika, Vs, Ss] = podes_slike(orig_slika);
+        figure(1), imshow(Unmarked_image), title('Unmarked image')
+        [slika, Vs, Ss] = podes_slike(Unmarked_image);
         faktor = norm_faktor(slika);
         slika = double(slika)/faktor;
         % Dimenzije ziga
@@ -61,162 +48,154 @@ while korak ~= kraj
         vel_ziga = vis_ziga * sir_ziga;
     end
         
-    % 2. Ucitavanje ziga (binarne slike) ---------------------------------
-    if korak == 2
-        ime_ziga = 'ZIG.jpeg';
-        %ime_ziga = input('Unesite naziv ziga:   ');
-        tmp_zig = imread(ime_ziga);
+    % 2. Read watermark (binary image with pixels 0 or 1) ---------------------------------
+    if step == 2
+        watermark = 'input\\watermark.jpeg';
+        tmp_zig = imread(watermark);
         orig_zig = zeros(size(tmp_zig));
         tmp_zig = tmp_zig/max(max(tmp_zig));
         preko = find(tmp_zig >= 0.5);
         orig_zig(preko) = ones(size(preko));
-        % Zig je binarna slika sa vrednostima piksela 0 i 1.
-        figure(2), imshow(orig_zig), title('Originalni zig')
+        figure(2), imshow(orig_zig), title('Original watermark')
         zig = podes_ziga(orig_zig);
     end
     
-    % 3. Izbor metoda (DCT ili Wavelet) ---------------------------------
-    if korak == 3
+    % 3. Select method (DCT or Wavelet) ---------------------------------
+    if step == 3
         m = 0;
         while m ~= 3
-            m = menu('Izbor metoda',...
+            m = menu('Select method',...
                 'DCT', 'Wavelet', 'OK');
             if m == 1
                 metod = 1;
                 disp('DCT')
+                break
             end
             if m == 2
                 metod = 2;
                 disp('Wavelet')
+                break
             end
         end
     end
         
-    % 4. Oznacavanje slike (ugradnja ziga u sliku) ----------------------
-    if korak == 4
-        % Kljuc za PSS generator
-        kljuc = 1682004;
-        %kljuc = input('\n Unesite lozinku:   ');
-        % MATLAB-ov PSS generator se podesi 
-        % na pocetno stanje odredjeno kljucem.
-        rng(kljuc);
-        % PSS Permutacija ziga
+    % 4. Mark an image (incorporate the watermark) ----------------------
+    if step == 4
+        % Key for PSS generator
+        key = 1682004; %TODO: make it an input
+        % MATLAB PSS generator is set to init state def by the key 
+        rng(key);
+        % PSS Permute the watermark
         a1 = randperm(vel_ziga);
-        clear kljuc; % brisanje kljuca
+        clear key; % delete key
         a2 = reshape(a1, vis_ziga, sir_ziga);
         skrembl_zig = zig(a2);
         skrembl_zig1 = (skrembl_zig - 0.5)/0.5; % -1 i 1
-        % skrembl_zig1 je tipa double
+        % skrembl_zig1 is type double
         if metod == 1
-            Zig_slika = ugradnja_DCT(slika, skrembl_zig1);
+            Marked_image = ugradnja_DCT(slika, skrembl_zig1);
         elseif metod == 2
-            Zig_slika = ugradnja_DWT(slika, skrembl_zig1);
+            Marked_image = ugradnja_DWT(slika, skrembl_zig1);
         else
             error('\n Greska pri izboru metoda.');
         end
-        figure(5), imshow(Zig_slika), title('Oznacena slika')
-        %slika_uint8 = uint8(slika * faktor);
-        %imwrite(slika_uint8, 'Slika.tif');
-        Zig_slika_uint8 = uint8(Zig_slika * faktor);
-        imwrite(Zig_slika_uint8, 'Oznacena_slika.tif');
+        figure(5), imshow(Marked_image), title('Marked image')
+        Marked_image_uint8 = uint8(Marked_image * faktor);
+        imwrite(Marked_image_uint8, 'output\\Marked_image.tif');
     end
     
-    % 5. Napad na sliku --------------------------------------------------
-    if korak == 5
+    % 5. Attak/degrade the image --------------------------------------------------
+    % no breaks so that combinations are possible
+    if step == 5
         k = 0;
         while k ~= 7
-            k = menu('Napad na sliku',...
-                'JPEG kompresija', 'Modifikacija osvetljaja',...
-                'Modifikacija kontrasta','Kropovanje','Filtriranje',...
-                'Sum','OK');
+            k = menu('Napad na slikuAttak/degrade the image',...
+                'JPEG compression', 'Brightness',...
+                'Contrast','Cropping','Filtering',...
+                'Noise','OK');
             if k == 1
-                napad = napad_kompresijom(Zig_slika_uint8);
-                %naziv dobijene slike pocinje sa: Kompr_Ozn_slika_
+                attack = compression(Marked_image_uint8);
+                %generates images that start with: JPEG_Mkd_img_
             end
             if k == 2
-                napad = napad_osvetljajem(Zig_slika);
-                %naziv dobijene slike pocinje sa: Osv_Ozn_slika_
-                %naziv dobijene slike pocinje sa: Osv_Ozn_slika_-
+                attack = brightness(Marked_image);
+                %generates images that start with: Bright_Mkd_img_
             end
             if k == 3
-                napad = napad_kontrastom(Zig_slika);
-                %naziv dobijene slike pocinje sa: Mkon_Ozn_slika_
-                %naziv dobijene slike pocinje sa: Hkon_Ozn_slika_
+                attack = contrast(Marked_image);
+                %generates images that start with: Mcon_Mkd_img_
+                %generates images that start with: Hcon_Mkd_img_
             end
             if k == 4
-                napad = napad_kropovanjem(Zig_slika_uint8);
-                %naziv dobijene slike pocinje sa: Vkrop_Ozn_slika_
-                %naziv dobijene slike pocinje sa: VSkrop_Ozn_slika_
+                attack = cropping(Marked_image_uint8);
+                %generates images that start with: Vcrop_Mkd_img_
+                %generates images that start with: VScrop_Mkd_img_
             end
             if k == 5
-                napad = napad_filtriranjem(Zig_slika_uint8);
-                %naziv dobijene slike pocinje sa: Filt_Ozn_slika_
+                attack = filtering(Marked_image_uint8);
+                %generates images that start with: Filt_Mkd_img_
             end
             if k == 6
-                napad = napad_sumom(Zig_slika_uint8);
-                %naziv dobijene slike pocinje sa: Sum_Ozn_slika_
+                attack = noise(Marked_image_uint8, folder);
+                %generates images that start with: Noise_Mkd_img_
             end
         end
-        disp(napad);
+        disp(attack);
     end
     
-    % 6. Ucitavanje intenzitetne slike sa zigom --------------------------
-    if korak == 6
-        ime_slike = input('\n Unesite naziv slike sa zigom:   ');
-        ozn_slika = imread(ime_slike);
-        if length(size(ozn_slika)) ~= 2
-            disp('Slika mora biti dimenzija MxN.');
-            ozn_slika = rgb2gray(ozn_slika);
-            % Ulazne slike su intenzitetne slike.
+    % 6. Read marked intensity/grayscale image --------------------------
+    if step == 6
+        img_file = input('\n Enter marked intensity/grayscale image:   ');
+        full_path = strcat('output\\',img_file);
+        Marked_image = imread(full_path);
+        if length(size(Marked_image)) ~= 2
+            disp('Image dimensions have to be MxN pixels.');
+            Marked_image = rgb2gray(Marked_image); % convert to grayscale
         end
-        faktor = norm_faktor(ozn_slika);
-        ozn_slika = double(ozn_slika)/faktor;
-        % Dimenzije oznacene slike i originalne slike su iste.
-        figure(6),imshow(ozn_slika), title('Oznacena slika (ucitana)')
+        faktor = norm_faktor(Marked_image);
+        Marked_image = double(Marked_image)/faktor;
+        % Dimensions of unmarked and marked image are the same.
+        figure(6),imshow(Marked_image), title('Marked image (read)')
     end
     
-    % 7. Detekcija ziga (izdvajanje ziga iz slike) -----------------------
-    if korak == 7
-        % Kljuc za PSS generator
-        kljuc = 1682004;
-        %kljuc = input('\n Unesite lozinku:   ');
-        % MATLAB-ov PSS generator se podesi 
-        % na pocetno stanje odredjeno kljucem.
-        rng('state', kljuc);
-        % Potrebno za ponistavanje PSS permutacije ziga.
+    % 7. Detect watermark -----------------------
+    if step == 7
+        % Key for PSS generator
+        key = 1682004;
+        %key = input('\n Enter the password:   ');
+        rng(key);
+        % Undo the permutation of the watermark.
         b1 = randperm(vel_ziga);
-        clear kljuc; % brisanje kljuca
+        clear key; % delete key
         b2 = reshape(b1, vis_ziga, sir_ziga);
         if metod == 1
-            rek_zig = izdvajanje_DCT(slika, ozn_slika, b2);
+            rek_zig = izdvajanje_DCT(slika, Marked_image, b2);
         elseif metod == 2
-            rek_zig = izdvajanje_DWT(slika, ozn_slika, b2);
+            rek_zig = izdvajanje_DWT(slika, Marked_image, b2);
         else
-            error('\n Greska pri izboru metoda.');
+            error('\n Error. Wrong method.');
         end
         figure(7),imshow(rek_zig),title('Detektovani zig')
         % Korelacije originalnog i detektovanog ziga 
         kkor_zigova = corr2(zig, rek_zig);
-        fprintf('\n Koeficijent korelacije zigova   %f', kkor_zigova)
+        fprintf('\n Correlation Coefficient of the watermarks   %f', kkor_zigova)
         nkor_zigova = sum(sum(rek_zig .* zig))/sum(sum(zig.^2));
-        fprintf('\n Normalizovana korelacija zigova   %f', nkor_zigova)
+        fprintf('\n Normalized Correlation of the watermarks   %f', nkor_zigova)
         % Korelacije originalne i oznacene slike
-        kkor_slika = corr2(slika, ozn_slika);
-        fprintf('\n Koeficijent korelacije slika   %f', kkor_slika)
-        nkor_slika = sum(sum(ozn_slika .* slika))/sum(sum(slika.^2));
-        fprintf('\n Normalizovana korelacija slika   %f  \n', nkor_slika)
+        kkor_slika = corr2(slika, Marked_image);
+        fprintf('\n Correlation Coefficient of the images   %f', kkor_slika)
+        nkor_slika = sum(sum(Marked_image .* slika))/sum(sum(slika.^2));
+        fprintf('\n Normalized Correlation of the images   %f  \n', nkor_slika)
         % Broj pogresnih bitova u detektovanom zigu
         greska = abs(rek_zig - zig);
         br_pogr_bita = sum(sum(greska));
-        fprintf('\n Broj pogresnih bita u detektovanom zigu %i   ', ...
+        fprintf('\n Num of bit errors in detected watermark %i   ', ...
             br_pogr_bita)
         procenat_pogr_bita = (br_pogr_bita/vel_ziga)*100;
-        fprintf('\n Procenat pogresnih bita u detektovanom zigu %f  \n',...
+        fprintf('\n Percent of bit errors (BER) in detected watermark %f  \n',...
             procenat_pogr_bita)
         disp('*******************************************************')
-        
     end
-    
-    %    KRAJ RADA  -----------------------------------------------------
+    %    THE END  -----------------------------------------------------
 end
-close all  clc
+clc

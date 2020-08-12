@@ -16,10 +16,10 @@ function y = wavecopy(type, c, s, n)
 %
 %   See also WAVEWORK, WAVECUT, AND WAVEPASTE.
 %
-% UZETO IZ: Rafael C. Gonzalez, Richard E. Woods. and Steven L. Eddins,
+% Taken from: Rafael C. Gonzalez, Richard E. Woods. and Steven L. Eddins,
 % Digital Image Processing Using MATLAB®, Prentice-Hall Inc, 2002.
 
-error(nargchk(3, 4, nargin));
+narginchk(3, 4);
 if nargin == 4
     y = wavework('copy', type, c, s, n);
 else

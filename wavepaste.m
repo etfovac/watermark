@@ -19,8 +19,8 @@ function nc = wavepaste(type, c, s, n, x)
 %
 %   See also WAVEWORK, WAVECUT, AND WAVECOPY.
 %
-% UZETO IZ: Rafael C. Gonzalez, Richard E. Woods. and Steven L. Eddins,
+% Taken from: Rafael C. Gonzalez, Richard E. Woods. and Steven L. Eddins,
 % Digital Image Processing Using MATLAB®, Prentice-Hall Inc, 2002.
 
-error(nargchk(5, 5, nargin));
+narginchk(5, 5);
 nc = wavework('paste', type, c, s, n, x);

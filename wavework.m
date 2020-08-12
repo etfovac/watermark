@@ -28,27 +28,27 @@ function [varargout] = wavework(opcode, type, c, s, n, x)
 %
 %   See also WAVECUT, WAVECOPY, AND WAVEPASTE.
 %
-% UZETO IZ: Rafael C. Gonzalez, Richard E. Woods. and Steven L. Eddins,
+% Taken from: Rafael C. Gonzalez, Richard E. Woods. and Steven L. Eddins,
 % Digital Image Processing Using MATLAB®, Prentice-Hall Inc, 2002.
 
-error(nargchk(4, 6, nargin));
+narginchk(4, 6);
 
-if (ndims(c) ~= 2) | (size(c, 1) ~= 1)
+if (~ismatrix(c)) || (size(c, 1) ~= 1)
     error('C must be a row vector.');
 end
 
-if (ndims(s) ~= 2) | ~isreal(s) | ~isnumeric(s) | (size(s, 2) ~= 2)
+if (~ismatrix(s)) || ~isreal(s) || ~isnumeric(s) || (size(s, 2) ~= 2)
     error('S must be a real, numeric two-column array.');
 end
 
 elements = prod(s, 2);          % Coefficient matrix elements.
-if (length(c) < elements(end)) | ...
+if (length(c) < elements(end)) || ...
         ~(elements(1) + 3 * sum(elements(2:end - 1)) >= elements(end))
     error(['[C, S] must form a standard wavelet decomposition '...
         'structure.']);
 end
 
-if strcmp(lower(opcode(1:3)), 'pas') & nargin < 6
+if strcmpi(opcode(1:3), 'pas') && nargin < 6
     error('Not enough input arguments');
 end
 
@@ -58,7 +58,7 @@ end
 nmax = size(s, 1) - 2;      % Maximum levels in [C, S].
 
 aflag = (lower(type(1)) == 'a');
-if ~aflag & (n > nmax)
+if ~aflag && (n > nmax)
     error('N exeeds the decompositions in [C, S].');
 end
 
@@ -83,17 +83,17 @@ end
 
 switch lower(opcode)        % Do requested action.
     case {'copy', 'cut'}
-        y = repmat(0, s(nindex, :));
+        y = zeros(s(nindex, :));
         y(:) = c(start:stop);
         nc = c;
-        if strcmp(lower(opcode(1:3)), 'cut')
+        if strcmpi(opcode(1:3), 'cut')
             nc(start:stop) = 0;
             varargout = {nc, y};
         else
             varargout = {y};
         end
     case 'paste'
-        if prod(size(x)) ~= elements(end - ntst)
+        if numel(x) ~= elements(end - ntst)
             error('X is not sized for the requested paste.');
         else
             nc = c;
