@@ -1,4 +1,4 @@
-close all, clc, clear all
+close all;  clc, clear variables
  
 %   UPRAVLJANJE PROGRAMOM VRSI SE SELEKTOVANJEM PONUDJENIH KORAKA.
 %   TREBA VODITI RACUNA O REDOSLEDU IZVRSAVANJA KORAKA. 
@@ -99,7 +99,7 @@ while korak ~= kraj
         %kljuc = input('\n Unesite lozinku:   ');
         % MATLAB-ov PSS generator se podesi 
         % na pocetno stanje odredjeno kljucem.
-        rand('state', kljuc);
+        rng(kljuc);
         % PSS Permutacija ziga
         a1 = randperm(vel_ziga);
         clear kljuc; % brisanje kljuca
@@ -182,7 +182,7 @@ while korak ~= kraj
         %kljuc = input('\n Unesite lozinku:   ');
         % MATLAB-ov PSS generator se podesi 
         % na pocetno stanje odredjeno kljucem.
-        rand('state', kljuc);
+        rng(kljuc);
         % Potrebno za ponistavanje PSS permutacije ziga.
         b1 = randperm(vel_ziga);
         clear kljuc; % brisanje kljuca
@@ -219,4 +219,4 @@ while korak ~= kraj
     
     %    KRAJ RADA  -----------------------------------------------------
 end
-close all, clc, clear all
+close all  clc
