@@ -1,14 +1,18 @@
 close all;  clc, clear variables
  
-% Ver.1.0 .
+% Ver.1.0 2009, Ver.1.1 2020
+% Author: Nikola Jovanovic
+% Repo: https://github.com/etfovac/watermark
+%
 % Use the simple Menu to control the program flow, but mind the order of the steps. 
 % Unmarked image has to be grayscale. If a color image is selected,  
 % it is coverted into grayscale image.
     
-global K dim_bloka Nivo faktor Vs Ss vis_ziga sir_ziga
-
-    step = 0;
-    the_end = 8;
+global K block_dim Level faktor Vs Ss vis_wmarka sir_wmarka
+% TODO: Get rid of globals
+output_folder = 'output\\';
+step = 0;
+the_end = 8;
 
 while step ~= the_end
     
@@ -23,41 +27,41 @@ while step ~= the_end
     ' Exit ');
     
 
-    K = 14;    % "Jacina ziga" u [%], tj. procenat promene koeficijenata
-    dim_bloka = 8; % Velicina DCT bloka je 8x8
-    Nivo = 3; % Nivo dekompozicije kod Wavelet transformacije
-    % Nivo = round(log10(dim_bloka)/log10(2))
+    K = 14;    % "watermark strength" in [%] 
+    % ie. percentage of transformation coefficients change
+    block_dim = 8; % DCT block size is 8x8
+    Level = 3; % Level of decomposition for Wavelet transformation
+    % Level = round(log10(block_dim)/log10(2))
     
     % 1. Read unmarked intensity image ----------------------------
     if step == 1
-        img_file = 'input\\lena_gray_512.tif';
-        %img_file = input('Unesite naziv originalne slike:   ');
-        Unmarked_image = imread(img_file);
+        img_path = 'input\\lena_gray_512.tif';
+        Unmarked_image = imread(img_path);
         if length(size(Unmarked_image)) ~= 2
-            disp('Slika mora biti dimenzija MxN.');
+            disp('Image dimensions have to be MxN pixels.');
             Unmarked_image = rgb2gray(Unmarked_image);
-            % Ulazne slike su intenzitetne slike.
+            % Enter intensity/grayscale image
         end
         figure(1), imshow(Unmarked_image), title('Unmarked image')
-        [slika, Vs, Ss] = podes_slike(Unmarked_image);
-        faktor = norm_faktor(slika);
-        slika = double(slika)/faktor;
-        % Dimenzije ziga
-        vis_ziga = Vs/dim_bloka;
-        sir_ziga = Ss/dim_bloka;
-        vel_ziga = vis_ziga * sir_ziga;
+        [Image, Vs, Ss] = podes_slike(Unmarked_image);
+        faktor = norm_faktor(Image);
+        Image = double(Image)/faktor;
+        % Dimenzije watermarka
+        vis_wmarka = Vs/block_dim;
+        sir_wmarka = Ss/block_dim;
+        vel_wmarka = vis_wmarka * sir_wmarka;
     end
         
     % 2. Read watermark (binary image with pixels 0 or 1) ---------------------------------
     if step == 2
-        watermark = 'input\\watermark.jpeg';
-        tmp_zig = imread(watermark);
-        orig_zig = zeros(size(tmp_zig));
-        tmp_zig = tmp_zig/max(max(tmp_zig));
-        preko = find(tmp_zig >= 0.5);
-        orig_zig(preko) = ones(size(preko));
-        figure(2), imshow(orig_zig), title('Original watermark')
-        zig = podes_ziga(orig_zig);
+        watermark_path = 'input\\watermark.jpeg';
+        tmp_wmark = imread(watermark_path);
+        orig_wmark = zeros(size(tmp_wmark));
+        tmp_wmark = tmp_wmark/max(max(tmp_wmark));
+        above = find(tmp_wmark >= 0.5);
+        orig_wmark(above) = ones(size(above));
+        figure(2), imshow(orig_wmark), title('Original watermark')
+        watermark = adj_wmark(orig_wmark);
     end
     
     % 3. Select method (DCT or Wavelet) ---------------------------------
@@ -67,12 +71,12 @@ while step ~= the_end
             m = menu('Select method',...
                 'DCT', 'Wavelet', 'OK');
             if m == 1
-                metod = 1;
+                method = 1;
                 disp('DCT')
                 break
             end
             if m == 2
-                metod = 2;
+                method = 2;
                 disp('Wavelet')
                 break
             end
@@ -86,16 +90,16 @@ while step ~= the_end
         % MATLAB PSS generator is set to init state def by the key 
         rng(key);
         % PSS Permute the watermark
-        a1 = randperm(vel_ziga);
+        a1 = randperm(vel_wmarka);
         clear key; % delete key
-        a2 = reshape(a1, vis_ziga, sir_ziga);
-        skrembl_zig = zig(a2);
-        skrembl_zig1 = (skrembl_zig - 0.5)/0.5; % -1 i 1
-        % skrembl_zig1 is type double
-        if metod == 1
-            Marked_image = ugradnja_DCT(slika, skrembl_zig1);
-        elseif metod == 2
-            Marked_image = ugradnja_DWT(slika, skrembl_zig1);
+        a2 = reshape(a1, vis_wmarka, sir_wmarka);
+        skrembl_wmark = watermark(a2);
+        skrembl_wmark1 = (skrembl_wmark - 0.5)/0.5; % -1 i 1
+        % skrembl_wmark1 is type double
+        if method == 1
+            Marked_image = ugradnja_DCT(Image, skrembl_wmark1);
+        elseif method == 2
+            Marked_image = ugradnja_DWT(Image, skrembl_wmark1);
         else
             error('\n Error. Unsupported method.');
         end
@@ -108,9 +112,8 @@ while step ~= the_end
     % no breaks so that combinations are possible
     if step == 5
         k = 0;
-        output_folder = 'output\\';
         while k ~= 7
-            k = menu('Napad na slikuAttak/degrade the image',...
+            k = menu('Attak/degrade the image',...
                 'JPEG compression', 'Brightness',...
                 'Contrast','Cropping','Filtering',...
                 'Noise','OK');
@@ -166,34 +169,30 @@ while step ~= the_end
         %key = input('\n Enter the password:   ');
         rng(key);
         % Undo the permutation of the watermark.
-        b1 = randperm(vel_ziga);
+        b1 = randperm(vel_wmarka);
         clear key; % delete key
-        b2 = reshape(b1, vis_ziga, sir_ziga);
-        if metod == 1
-            rek_zig = izdvajanje_DCT(slika, Marked_image, b2);
-        elseif metod == 2
-            rek_zig = izdvajanje_DWT(slika, Marked_image, b2);
+        b2 = reshape(b1, vis_wmarka, sir_wmarka);
+        if method == 1
+            recovered_watermark = izdvajanje_DCT(Image, Marked_image, b2);
+        elseif method == 2
+            recovered_watermark = izdvajanje_DWT(Image, Marked_image, b2);
         else
             error('\n Error. Unsupported method.');
         end
-        figure(7),imshow(rek_zig),title('Detected watermark')
-        % Korelacije originalnog i detektovanog ziga 
-        kkor_zigova = corr2(zig, rek_zig);
-        fprintf('\n Correlation Coefficient of the watermarks   %f', kkor_zigova)
-        nkor_zigova = sum(sum(rek_zig .* zig))/sum(sum(zig.^2));
-        fprintf('\n Normalized Correlation of the watermarks   %f', nkor_zigova)
-        % Korelacije originalne i oznacene slike
-        kkor_slika = corr2(slika, Marked_image);
+        figure(7),imshow(recovered_watermark),title('Detected watermark')
+        kkor_wmarkova = corr2(watermark, recovered_watermark);
+        fprintf('\n Correlation Coefficient of the watermarks   %f', kkor_wmarkova)
+        nkor_wmarkova = sum(sum(recovered_watermark .* watermark))/sum(sum(watermark.^2));
+        fprintf('\n Normalized Correlation of the watermarks   %f', nkor_wmarkova)
+        kkor_slika = corr2(Image, Marked_image);
         fprintf('\n Correlation Coefficient of the images   %f', kkor_slika)
-        nkor_slika = sum(sum(Marked_image .* slika))/sum(sum(slika.^2));
+        nkor_slika = sum(sum(Marked_image .* Image))/sum(sum(Image.^2));
         fprintf('\n Normalized Correlation of the images   %f  \n', nkor_slika)
-        % Broj pogresnih bitova u detektovanom zigu
-        greska = abs(rek_zig - zig);
-        br_pogr_bita = sum(sum(greska));
-        fprintf('\n Num of bit errors in detected watermark %i   ', ...
-            br_pogr_bita)
-        procenat_pogr_bita = (br_pogr_bita/vel_ziga)*100;
-        fprintf('\n Percent of bit errors (BER) in detected watermark %f  \n',...
+        error = abs(recovered_watermark - watermark);
+        br_pogr_bita = sum(sum(error));
+        fprintf('\n Num of bit errors in detected watermark %i   ', br_pogr_bita)
+        procenat_pogr_bita = (br_pogr_bita/vel_wmarka)*100;
+        fprintf('\n BER [%%] for detected watermark %f  \n',...
             procenat_pogr_bita)
         disp('*******************************************************')
     end
