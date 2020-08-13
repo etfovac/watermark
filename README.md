@@ -19,7 +19,8 @@ Attacked/degraded images are saved and the watermark is extracted.
 Robustness of DWT vs DCT is graded based on the quality of extracted watermark.  
 The measure used is the Correlation coefficient (0-100% or 0-1).  
 
-![Basic Overview](https://github.com/etfovac/watermark/blob/master/graphics/Flowchart_SRB.png)
+### Flowchart
+<img src="https://github.com/etfovac/watermark/blob/master/graphics/Flowchart_ENG.png" alt="Flowchart" width="430" height="450">
 
 ## References:  
 <a href="https://www.researchgate.net/profile/Nikola_Jovanovic9">Nikola Jovanovic on ResearchGate</a>  
