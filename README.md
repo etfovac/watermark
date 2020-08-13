@@ -20,7 +20,12 @@ Robustness of DWT vs DCT is graded based on the quality of extracted watermark.
 The measure used is the Correlation coefficient (0-100% or 0-1).  
 
 ### Flowchart
-<img src="https://github.com/etfovac/watermark/blob/master/graphics/Flowchart_ENG.png" alt="Flowchart" width="430" height="450">
+<img src="https://github.com/etfovac/watermark/blob/master/graphics/Flowchart_ENG.png" alt="Flowchart" width="430" height="450">  
+### DWT Breakdown
+<img src="https://github.com/etfovac/watermark/blob/master/graphics/DWT_Breakdown.png" alt="DWT_Breakdown" width="427" height="412">  
+<img src="https://github.com/etfovac/watermark/blob/master/graphics/DWT_Breakdown0.png" alt="DWT_Breakdown0" width="437" height="199">  
+<img src="https://github.com/etfovac/watermark/blob/master/graphics/DWT_Breakdown1.png" alt="DWT_Breakdown1" width="429" height="214">  
+<img src="https://github.com/etfovac/watermark/blob/master/graphics/DWT_Breakdown2.png" alt="DWT_Breakdown2" width="434" height="213">  
 
 ## References:  
 <a href="https://www.researchgate.net/profile/Nikola_Jovanovic9">Nikola Jovanovic on ResearchGate</a>  
