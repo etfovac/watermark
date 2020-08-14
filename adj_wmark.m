@@ -1,34 +1,34 @@
-function zig = adj_wmark(orig_zig)
-global vis_ziga sir_ziga
-% Dimenzije originalnog ziga
-        Vz = size(orig_zig,1); % visina
-        Sz = size(orig_zig,2); % sirina
-% Podesavanje dimenzija ziga
-        zig1 = []; % inicijalizacija
-        if Vz < vis_ziga
-            n = floor(vis_ziga/Vz);
+function wmark = adj_wmark(w)
+global hdim_wmark wdim_wmark
+% Dim of original wmark
+        Vz = size(w,1); % h
+        Sz = size(w,2); % w
+% Adjust wmark dimensions
+        wmark1 = []; % init
+        if Vz < hdim_wmark
+            n = floor(hdim_wmark/Vz);
             for i = 1:n
-                zig1 = [zig1; orig_zig]; % zig se ponavlja po vertikali
+                wmark1 = [wmark1; w]; % repeat verticaly
             end
-            dopuna = orig_zig(1:mod(vis_ziga,Vz), :);
-            zig1 = [zig1; dopuna];
+            filler = w(1:mod(hdim_wmark,Vz), :);
+            wmark1 = [wmark1; filler];
         else
-            zig1 = orig_zig(1:vis_ziga, :); % odsecanje
+            wmark1 = w(1:hdim_wmark, :); % crop
         end
-        zig2 = []; % inicijalizacija
-        if Sz < sir_ziga
-            m = floor(sir_ziga/Sz);
+        wmark2 = []; % init
+        if Sz < wdim_wmark
+            m = floor(wdim_wmark/Sz);
             for j = 1:m
-                zig2 = [zig2, zig1]; % zig se ponavlja po horizontali
+                wmark2 = [wmark2, wmark1]; % repeat horizontaly
             end
-            dopuna = zig1(:, 1:mod(sir_ziga,Sz));
-            zig2 = [zig2, dopuna]; 
+            filler = wmark1(:, 1:mod(wdim_wmark,Sz));
+            wmark2 = [wmark2, filler]; 
         else
-            zig2 = zig1(:, 1:sir_ziga); % odsecanje
+            wmark2 = wmark1(:, 1:wdim_wmark); % crop
         end
-        zig = zig2;
-        if (Vz ~= vis_ziga) || (Sz ~= sir_ziga)
-            fprintf('\n Dimenzije ziga su podesene na: %ix%i.', ...
-                vis_ziga, sir_ziga);
-            imwrite(uint8(zig),'zig.bmp');
+        wmark = wmark2;
+        if ((Vz ~= hdim_wmark) || (Sz ~= wdim_wmark))
+            fprintf('\n Watermark dimensions are set to: %ix%i.', ...
+                hdim_wmark, wdim_wmark);
+            imwrite(uint8(wmark),'w.bmp');
         end  

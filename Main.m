@@ -8,7 +8,7 @@ close all;  clc, clear variables
 % Unmarked image has to be grayscale. If a color image is selected,  
 % it is coverted into grayscale image.
     
-global K block_dim Level faktor Vs Ss vis_wmarka sir_wmarka
+global K block_dim Level factor Vs Ss hdim_wmark wdim_wmark
 % TODO: Get rid of globals
 output_folder = 'output\\';
 step = 0;
@@ -43,13 +43,13 @@ while step ~= the_end
             % Enter intensity/grayscale image
         end
         figure(1), imshow(Unmarked_image), title('Unmarked image')
-        [Image, Vs, Ss] = podes_slike(Unmarked_image);
-        faktor = norm_faktor(Image);
-        Image = double(Image)/faktor;
-        % Dimenzije watermarka
-        vis_wmarka = Vs/block_dim;
-        sir_wmarka = Ss/block_dim;
-        vel_wmarka = vis_wmarka * sir_wmarka;
+        [Image, Vs, Ss] = adj_image(Unmarked_image, block_dim);
+        factor = norm_factor(Image);
+        Image = double(Image)/factor;
+        % Watermark dimensions
+        hdim_wmark = Vs/block_dim;
+        wdim_wmark = Ss/block_dim;
+        hw_wmark = hdim_wmark * wdim_wmark;
     end
         
     % 2. Read watermark (binary image with pixels 0 or 1) ---------------------------------
@@ -90,21 +90,21 @@ while step ~= the_end
         % MATLAB PSS generator is set to init state def by the key 
         rng(key);
         % PSS Permute the watermark
-        a1 = randperm(vel_wmarka);
+        a1 = randperm(hw_wmark);
         clear key; % delete key
-        a2 = reshape(a1, vis_wmarka, sir_wmarka);
+        a2 = reshape(a1, hdim_wmark, wdim_wmark);
         skrembl_wmark = watermark(a2);
         skrembl_wmark1 = (skrembl_wmark - 0.5)/0.5; % -1 i 1
         % skrembl_wmark1 is type double
         if method == 1
-            Marked_image = ugradnja_DCT(Image, skrembl_wmark1);
+            Marked_image = embed_DCT(Image, skrembl_wmark1, block_dim, K);
         elseif method == 2
-            Marked_image = ugradnja_DWT(Image, skrembl_wmark1);
+            Marked_image = embed_DWT(Image, skrembl_wmark1, Level, K);
         else
             error('\n Error. Unsupported method.');
         end
         figure(5), imshow(Marked_image), title('Marked image')
-        Marked_image_uint8 = uint8(Marked_image * faktor);
+        Marked_image_uint8 = uint8(Marked_image * factor);
         imwrite(Marked_image_uint8, 'output\\Marked_image.tif');
     end
     
@@ -122,11 +122,11 @@ while step ~= the_end
                 %generates images that start with: JPEG_Mkd_img_
             end
             if k == 2
-                attack = brightness(Marked_image, output_folder);
+                attack = brightness(Marked_image, output_folder, factor);
                 %generates images that start with: Bright_Mkd_img_
             end
             if k == 3
-                attack = contrast(Marked_image, output_folder);
+                attack = contrast(Marked_image, output_folder, factor);
                 %generates images that start with: Mcon_Mkd_img_
                 %generates images that start with: Hcon_Mkd_img_
             end
@@ -156,8 +156,8 @@ while step ~= the_end
             disp('Image dimensions have to be MxN pixels.');
             Marked_image = rgb2gray(Marked_image); % convert to grayscale
         end
-        faktor = norm_faktor(Marked_image);
-        Marked_image = double(Marked_image)/faktor;
+        factor = norm_factor(Marked_image);
+        Marked_image = double(Marked_image)/factor;
         % Dimensions of unmarked and marked image are the same.
         figure(6),imshow(Marked_image), title('Marked image (read)')
     end
@@ -169,13 +169,13 @@ while step ~= the_end
         %key = input('\n Enter the password:   ');
         rng(key);
         % Undo the permutation of the watermark.
-        b1 = randperm(vel_wmarka);
+        b1 = randperm(hw_wmark);
         clear key; % delete key
-        b2 = reshape(b1, vis_wmarka, sir_wmarka);
+        b2 = reshape(b1, hdim_wmark, wdim_wmark);
         if method == 1
-            recovered_watermark = izdvajanje_DCT(Image, Marked_image, b2);
+            recovered_watermark = extract_DCT(Image, Marked_image, b2, block_dim, hdim_wmark, wdim_wmark);
         elseif method == 2
-            recovered_watermark = izdvajanje_DWT(Image, Marked_image, b2);
+            recovered_watermark = extract_DWT(Image, Marked_image, b2, Level, factor, hdim_wmark, wdim_wmark);
         else
             error('\n Error. Unsupported method.');
         end
@@ -191,9 +191,8 @@ while step ~= the_end
         error = abs(recovered_watermark - watermark);
         br_pogr_bita = sum(sum(error));
         fprintf('\n Num of bit errors in detected watermark %i   ', br_pogr_bita)
-        procenat_pogr_bita = (br_pogr_bita/vel_wmarka)*100;
-        fprintf('\n BER [%%] for detected watermark %f  \n',...
-            procenat_pogr_bita)
+        procenat_pogr_bita = (br_pogr_bita/hw_wmark)*100;
+        fprintf('\n BER [%%] for detected watermark %f  \n', procenat_pogr_bita)
         disp('*******************************************************')
     end
     %    THE END  -----------------------------------------------------
