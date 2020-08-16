@@ -1,6 +1,6 @@
 function Marked_Image_DCT = embed_DCT(Image, skrembl_zig1, dim_bloka, K)
 % Generate Marked_Image_DCT 
-global Vs Ss
+[Vs, Ss] = size(Image);
 % Middle DCT coeffs range is selected for watermarking
 y = 1; n = 1; v = 1; m = 1; d = 0; x = 0;
 srednji = [  0, 0, y, n, v, m, d, x;    

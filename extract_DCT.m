@@ -1,6 +1,6 @@
 function rec_wmark= extract_DCT(Image, Marked_image, b2, block_dim, hdim_wmark, wdim_wmark)
 % Reconstruct wmark
-global Vs Ss
+[Vs, Ss] = size(Image);
 %-------------------------------------------------------------------------
 y = 1; n = 1; v = 1; m = 1; d = 0; x = 0;
 range = [  0, 0, y, n, v, m, d, x;    
