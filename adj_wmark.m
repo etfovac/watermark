@@ -1,5 +1,5 @@
-function wmark = adj_wmark(w)
-global hdim_wmark wdim_wmark
+function wmark = adj_wmark(w, hdim_wmark, wdim_wmark)
+% 
 % Dim of original wmark
         Vz = size(w,1); % h
         Sz = size(w,2); % w
