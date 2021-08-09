@@ -28,6 +28,7 @@ The measure used is the Correlation coefficient (0-100% or 0-1).
 <img src="./graphics/DWT_Breakdown2.png" alt="DWT_Breakdown2" width="434" height="213">  
 
 ### Using the App  
+<img src="./graphics/Main.png" alt="Main"> <img src="./graphics/MethodSelection.png" alt="MethodSelection"> <img src="./graphics/AttackSelection.png" alt="AttackSelection">  
 
 ### Example Log  
 #### Case: No watermark, no attak, no detection
