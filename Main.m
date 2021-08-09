@@ -116,7 +116,7 @@ while step ~= the_end
                     elseif strcmp(method, 'DWT')
                         Marked_image = embed_DWT(Image, scrambled_wmark_norm, Level, K);
                     else
-                        disp('Not marked. Watermark method not selected.')
+                        disp('Not marked. Watermark method: None.')
                         Marked_image = Image;
                     end
                     default_file = fullfile(fullfile(fullfile(pwd,'output'),'marked'),strcat(file_name,'_', method, '.tif'));
@@ -143,7 +143,7 @@ while step ~= the_end
     if step == 5
         if evalin( 'base', 'exist(''Marked_image'',''var'') == 1' )
         % check if image file/var is loaded.
-            attack = 'None';
+            attack = 'Attack: None';
             k = 0;
             while k ~= 7
                 k = menu('Attak/degrade the image',...
@@ -226,9 +226,9 @@ while step ~= the_end
                     elseif strcmp(method, 'DWT')
                         recovered_watermark = extract_DWT(Image, Marked_image, b2, Level, nfactor, hdim_wmark, wdim_wmark);
                     else
-                        disp('Not detected. Watermark method not selected.')
+                        disp('Not detected. Watermark method: None.')
                         Marked_image = Image;
-                        recovered_watermark = watermark;
+                        recovered_watermark = watermark*0;
                     end
                     figure('Name',strcat("Detected watermark from: ",file)),imshow(recovered_watermark),title('Detected watermark')
                     CC_wmark = corr2(watermark, recovered_watermark);
