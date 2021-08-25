@@ -11,24 +11,20 @@
 > Digital Image processing
 
 
-## Basic Overview
-Digital Watermarking (DWM) is a technique of protecting digital data.  
-This code base implements 2 methods for marking digital images based on DCT and DWT.  
-Several attacks (signal degradations such as noise, dithering, filtering, cropping, lossy JPEG compression) on a marked image were conducted.  
-Attacked/degraded images are saved and the watermark is extracted.  
-Robustness of DWT vs DCT is graded based on the quality of extracted watermark.  
-The measure used is the Correlation coefficient (0-100% or 0-1).  
+## Basic Overview  
+Digital Watermarking (DWM) is a technique of protecting digital data. This code base implements 2 methods for marking digital images based on Discrete Cosine Transform (DCT) and Discrete Wavelet Transform (DWT).  
+Several attacks (signal degradations such as noise, dithering, filtering, cropping, lossy JPEG compression) on marked image were conducted. Attacked images are saved and the watermark is extracted.  
+Robustness of DWT vs DCT is graded based on the quality of extracted watermark. The measure used is the Correlation coefficient (0-100% or 0-1). 
 
-### Flowchart
+### Flowchart  
 <img src="./graphics/Flowchart_ENG.png" alt="Flowchart" width="430" height="450">  
-### DWT Breakdown
-<img src="./graphics/DWT_Breakdown.png" alt="DWT_Breakdown" width="427" height="412">  
-<img src="./graphics/DWT_Breakdown0.png" alt="DWT_Breakdown0" width="437" height="199">  
-<img src="./graphics/DWT_Breakdown1.png" alt="DWT_Breakdown1" width="429" height="214">  
-<img src="./graphics/DWT_Breakdown2.png" alt="DWT_Breakdown2" width="434" height="213">  
+
+### Discrete Wavelet Transform Breakdown  
+<img src="./graphics/DWT_Breakdown.png" alt="DWT_Breakdown" width="427" height="412"> <img src="./graphics/DWT_Breakdown0.png" alt="DWT_Breakdown0" width="437" height="199">  
+<img src="./graphics/DWT_Breakdown1.png" alt="DWT_Breakdown1" width="429" height="214"> <img src="./graphics/DWT_Breakdown2.png" alt="DWT_Breakdown2" width="434" height="213">  
 
 ### Using the App  
-<img src="./graphics/Main.png" alt="Main"> <img src="./graphics/MethodSelection.png" alt="MethodSelection"> <img src="./graphics/AttackSelection.png" alt="AttackSelection">  
+<img src="./graphics/Main.png" alt="Main"> >> <img src="./graphics/MethodSelection.png" alt="MethodSelection"> >> <img src="./graphics/AttackSelection.png" alt="AttackSelection">  
 
 ### Example Log  
 #### Case: No watermark, no attak, no detection
