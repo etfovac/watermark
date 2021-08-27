@@ -44,6 +44,33 @@ Not detected. Watermark method: None.
  BER [%] for detected watermark 64.331055  
 *******************************************************
 ```
+#### Case: Watermarked, no attak, detection comparison
+```
+Method: DCT
+Attack: None
+C:\Users\dzoni\Documents\GitHub\watermark\output\marked\Marked_image_DCT.tif
+
+ Correlation Coefficient of the watermarks   0.995758
+ Normalized Correlation of the watermarks   0.996964
+ Correlation Coefficient of the images   0.999543
+ Normalized Correlation of the images   0.999996  
+
+ Num of bit errors in detected watermark 8   
+ BER [%] for detected watermark 0.195313  
+*******************************************************
+Method: DWT
+Attack: None
+C:\Users\dzoni\Documents\GitHub\watermark\output\marked\Marked_image_DWT.tif
+
+ Correlation Coefficient of the watermarks   1.000000
+ Normalized Correlation of the watermarks   1.000000
+ Correlation Coefficient of the images   0.998351
+ Normalized Correlation of the images   1.000107  
+
+ Num of bit errors in detected watermark 0   
+ BER [%] for detected watermark 0.000000  
+*******************************************************
+```
 
 ## References:  
 <a href="https://www.researchgate.net/profile/Nikola_Jovanovic9">Nikola Jovanovic on ResearchGate</a>  
