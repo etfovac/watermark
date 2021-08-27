@@ -11,7 +11,7 @@ range = [  0, 0, y, n, v, m, d, x;
              m, d, x, 0, 0, 0, 0, 0;
              d, x, 0, 0, 0, 0, 0, 0;
              x, 0, 0, 0, 0, 0, 0, 0  ];
-skrembl_zig = zeros(hdim_wmark,wdim_wmark); % init
+scrambeled_wmark = zeros(hdim_wmark,wdim_wmark); % init
 T = dctmtx(block_dim);
 z1 = 0; % init
 for s1 = 1: block_dim: Vs
@@ -19,19 +19,19 @@ for s1 = 1: block_dim: Vs
     z2 = 0; % init
     for s2 = 1: block_dim: Ss
         z2 = z2 + 1;
-        indeks1 = s1: s1 + block_dim - 1;
-        indeks2 = s2: s2 + block_dim - 1;
-        block = Image(indeks1, indeks2);
-        mkd_block = Marked_image(indeks1, indeks2);
-        DCT_blok = T * block * T';   % double
-        DCT_ozn_blok = T * mkd_block * T';   % double
-        B = (DCT_ozn_blok - DCT_blok) .* range;
+        idx1 = s1: s1 + block_dim - 1;
+        idx2 = s2: s2 + block_dim - 1;
+        block = Image(idx1, idx2);
+        mkd_block = Marked_image(idx1, idx2);
+        DCT_block = T * block * T';   % double
+        DCT_mrk_block = T * mkd_block * T';   % double
+        B = (DCT_mrk_block - DCT_block) .* range;
         if sum(sum(B)) > 0
-            skrembl_zig(z1, z2)= 1;
+            scrambeled_wmark(z1, z2)= 1;
         else
-            skrembl_zig(z1, z2)= 0;
+            scrambeled_wmark(z1, z2)= 0;
         end
     end
 end
-rec_wmark = skrembl_zig;  % init
-rec_wmark(b2) = skrembl_zig;
+rec_wmark = scrambeled_wmark;  % init
+rec_wmark(b2) = scrambeled_wmark;

@@ -1,9 +1,9 @@
 close all;  clc, clear variables
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Ver.1.0 2009, Ver.1.2 2020
+% Ver.1.0 2009, 1.2 2020, 1.2.x 2021
 % Author: Nikola Jovanovic
 % Repo: https://github.com/etfovac/watermark
-%
+% https://www.mathworks.com/matlabcentral/fileexchange/78790-digital-watermarking-comparison-of-dct-and-dwt-methods
 % Use the simple Menu to control the program flow:
 % Steps 1-3 are mandatory on init, steps 3-7 are repeatable, 8 - Exits.
 %

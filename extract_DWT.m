@@ -1,39 +1,39 @@
-function rek_zig = extract_DWT(Image, Marked_image, b2, Level, factor, hdim_wmark, wdim_wmark)
+function returned_wmark = extract_DWT(Image, Marked_image, b2, Level, factor, hdim_wmark, wdim_wmark)
 % Reconstruct watermark from a marked image ---------------------------------
 % Level = 3
 %-------------------------------------------------------------------------
 [Image_DWT, bookie] = wavedec2(Image, Level, 'haar');
-horiz_detalji3 = wavecopy('h', Image_DWT, bookie, Level);
-vert_detalji3 = wavecopy('v', Image_DWT, bookie, Level);
-dijag_detalji3 = wavecopy('d', Image_DWT, bookie, Level);
-horiz_detalji2 = wavecopy('h', Image_DWT, bookie, Level-1);
-vert_detalji2 = wavecopy('v', Image_DWT, bookie, Level-1);
-dijag_detalji2 = wavecopy('d', Image_DWT, bookie, Level-1);
+horiz_detailes3 = wavecopy('h', Image_DWT, bookie, Level);
+vert_detailes3 = wavecopy('v', Image_DWT, bookie, Level);
+diagonal_detailes3 = wavecopy('d', Image_DWT, bookie, Level);
+horiz_detailes2 = wavecopy('h', Image_DWT, bookie, Level-1);
+vert_detailes2 = wavecopy('v', Image_DWT, bookie, Level-1);
+diagonal_detailes2 = wavecopy('d', Image_DWT, bookie, Level-1);
 %-------------------------------------------------------------------------
-[Marked_Image_DWT, ozn_bookie] = wavedec2(Marked_image, Level, 'haar');
-ozn_horiz_detalji3 = wavecopy('h', Marked_Image_DWT, ozn_bookie, Level);
-ozn_vert_detalji3 = wavecopy('v', Marked_Image_DWT, ozn_bookie, Level);
-ozn_dijag_detalji3 = wavecopy('d', Marked_Image_DWT, ozn_bookie, Level);
-ozn_horiz_detalji2 = wavecopy('h', Marked_Image_DWT, ozn_bookie, Level-1);
-ozn_vert_detalji2 = wavecopy('v', Marked_Image_DWT, ozn_bookie, Level-1);
-ozn_dijag_detalji2 = wavecopy('d', Marked_Image_DWT, ozn_bookie, Level-1);
+[Marked_Image_DWT, mrk_bookie] = wavedec2(Marked_image, Level, 'haar');
+mrk_horiz_detailes3 = wavecopy('h', Marked_Image_DWT, mrk_bookie, Level);
+mrk_vert_detailes3 = wavecopy('v', Marked_Image_DWT, mrk_bookie, Level);
+mrk_diagonal_detailes3 = wavecopy('d', Marked_Image_DWT, mrk_bookie, Level);
+mrk_horiz_detailes2 = wavecopy('h', Marked_Image_DWT, mrk_bookie, Level-1);
+mrk_vert_detailes2 = wavecopy('v', Marked_Image_DWT, mrk_bookie, Level-1);
+mrk_diagonal_detailes2 = wavecopy('d', Marked_Image_DWT, mrk_bookie, Level-1);
 %-------------------------------------------------------------------------
-skrembl_zig3 = ((ozn_horiz_detalji3 - horiz_detalji3) + ...
-    (ozn_vert_detalji3 - vert_detalji3) + ...
-    (ozn_dijag_detalji3 - dijag_detalji3));
-skrembl_zig2 = ((ozn_horiz_detalji2 - horiz_detalji2) + ...
-    (ozn_vert_detalji2 - vert_detalji2) + ...
-    (ozn_dijag_detalji2 - dijag_detalji2));
-skrembl_zig = skrembl_zig2(1:hdim_wmark, 1:wdim_wmark) + ...
-    skrembl_zig2(hdim_wmark + 1:hdim_wmark * 2, 1:wdim_wmark) + ...
-    skrembl_zig2(1:hdim_wmark, wdim_wmark + 1:wdim_wmark * 2) + ...
-    skrembl_zig2(hdim_wmark + 1:hdim_wmark * 2, wdim_wmark + 1:wdim_wmark * 2)...
-    + skrembl_zig3;
-skrembl_zig = round(skrembl_zig * factor);
+scrambeled_wmark3 = ((mrk_horiz_detailes3 - horiz_detailes3) + ...
+    (mrk_vert_detailes3 - vert_detailes3) + ...
+    (mrk_diagonal_detailes3 - diagonal_detailes3));
+scrambeled_wmark2 = ((mrk_horiz_detailes2 - horiz_detailes2) + ...
+    (mrk_vert_detailes2 - vert_detailes2) + ...
+    (mrk_diagonal_detailes2 - diagonal_detailes2));
+scrambeled_wmark = scrambeled_wmark2(1:hdim_wmark, 1:wdim_wmark) + ...
+    scrambeled_wmark2(hdim_wmark + 1:hdim_wmark * 2, 1:wdim_wmark) + ...
+    scrambeled_wmark2(1:hdim_wmark, wdim_wmark + 1:wdim_wmark * 2) + ...
+    scrambeled_wmark2(hdim_wmark + 1:hdim_wmark * 2, wdim_wmark + 1:wdim_wmark * 2)...
+    + scrambeled_wmark3;
+scrambeled_wmark = round(scrambeled_wmark * factor);
 %-------------------------------------------------------------------------
-rek_zig = skrembl_zig;  % init
-rek_zig(b2)= skrembl_zig;
-kec = rek_zig > 0;
-nula = rek_zig < 0;
-rek_zig(kec) = 1;
-rek_zig(nula) = 0;
+returned_wmark = scrambeled_wmark;  % init
+returned_wmark(b2)= scrambeled_wmark;
+One = returned_wmark > 0;
+Zero = returned_wmark < 0;
+returned_wmark(One) = 1;
+returned_wmark(Zero) = 0;
