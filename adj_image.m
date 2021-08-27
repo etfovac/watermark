@@ -1,6 +1,5 @@
 function [Image, Vs, Ss] = adj_image(orig_Image, block_dim)
-% Podesavanje dimenzija slike (zero padding)
-% Image dimensions
+% Image dimensions adjustment (zero padding)
 Vor = size(orig_Image, 1); % h
 Sor = size(orig_Image, 2); % w
 remainder1 = mod(Vor, block_dim);
@@ -10,7 +9,7 @@ if (remainder1 ~= 0) || (remainder2 ~= 0)
     % Image dimensions
     Vs = size(Image, 1);
     Ss = size(Image, 2);
-    fprintf('\n Dimenzije slike su podesene na: %ix%i.', Vs, Ss);
+    fprintf('\n Image dimensions are set to: %ix%i.', Vs, Ss);
 else
     Image = orig_Image;
     % Image dimensions
