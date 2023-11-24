@@ -10,7 +10,7 @@ for i = 1:length(s)
     cut1 = floor(Vs/s(i));
     cut2 = Ss;
     strip(1:cut1, 1:cut2) = zeros(cut1, cut2);
-    path = strcat(folder, ['Vcrop_Mkd_img_',num2str(s(i)),'.tif']);
+    path = strcat(folder, '\', ['Vcrop_Mkd_img_',num2str(s(i)),'.tif']);
     imwrite(strip, path);
 end
 
@@ -19,7 +19,7 @@ for i = 1:length(s)
     cut1 = floor(Vs/s(i));
     cut2 = floor(Ss/s(i));
     square(1:cut1, 1:cut2) = zeros(cut1, cut2);
-    path = strcat(folder, ['VScrop_Mkd_img_',num2str(s(i)),'.tif']);
+    path = strcat(folder, '\', ['VScrop_Mkd_img_',num2str(s(i)),'.tif']);
     imwrite(square, path);
 end
 
