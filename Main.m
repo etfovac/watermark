@@ -35,7 +35,7 @@ while step ~= the_end
     % 1. Read unmarked intensity image ----------------------------
     if step == 1
         [file, path, index] = uigetfile(fullfile(pwd,'input','*.tif;*.png;*.jpg;*.jpeg'),'Input image file selection');
-        if and(length(file~=1),length(path)~=1)
+        if and(length(file)~=1,length(path)~=1)
             img_path = fullfile(path,file);
             Unmarked_image = imread(img_path);
             if length(size(Unmarked_image)) ~= 2
@@ -57,7 +57,7 @@ while step ~= the_end
     % 2. Read watermark (binary image with pixels 0 or 1) ---------------------------------
     if step == 2
         [file, path, index] = uigetfile(fullfile(pwd,'input','*.jpeg;*.png;*.jpg;*.tif'),'Input watermark image file selection');
-        if and(length(file~=1),length(path)~=1)
+        if and(length(file)~=1,length(path)~=1)
             watermark_path = fullfile(path,file); %'input\\watermark.jpeg';
             tmp_wmark = imread(watermark_path);
             orig_wmark = zeros(size(tmp_wmark));
@@ -121,7 +121,7 @@ while step ~= the_end
                     end
                     default_file = fullfile(fullfile(fullfile(pwd,'output'),'marked'),strcat(file_name,'_', method, '.tif'));
                     [file, path, index] = uiputfile(('*.tif;*.png;*.jpg;*.jpeg'),'Marked image file Save As', default_file);
-                    if and(length(file~=1),length(path)~=1)
+                    if and(length(file)~=1,length(path)~=1)
                         file_path = fullfile(path,file);
                         figure('Name',strcat("Marked image: ",file)), imshow(Marked_image), title('Marked image')
                         Marked_image_uint8 = uint8(Marked_image * nfactor);
@@ -190,7 +190,7 @@ while step ~= the_end
     % 6. Read marked intensity/grayscale image --------------------------
     if step == 6
         [file, path, index] = uigetfile(fullfile(pwd,'output','*.tif;*.png;*.jpg;*.jpeg'),'Marked intensity/grayscale image selection');
-        if and(length(file~=1),length(path)~=1)
+        if and(length(file)~=1,length(path)~=1)
             full_path = fullfile(path,file);
             disp(full_path);
             Marked_image = imread(full_path);
