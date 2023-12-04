@@ -1,14 +1,14 @@
 close all;  clc, clear variables
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Ver.1.0 2009, 1.2 2020, 1.2.x 2021
+% Ver.1.0 2009, 1.2 2020, 1.2.x 2021, 2023 (see .MLX Example)
 % Author: Nikola Jovanovic
 % Repo: https://github.com/etfovac/watermark
 % https://www.mathworks.com/matlabcentral/fileexchange/78790-digital-watermarking-comparison-of-dct-and-dwt-methods
 % Use the simple Menu to control the program flow:
 % Steps 1-3 are mandatory on init, steps 3-7 are repeatable, 8 - Exits.
 %
-% Note: Unmarked image has to be grayscale. If a color image is selected,  
-% it is coverted into grayscale image.
+% Note: Unmarked image has to be grayscale.   
+% If a color image is selected, it is coverted into a grayscale image.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 nfactor = 1; hdim_wmark = 1; wdim_wmark = 1; % set later to actual vals
@@ -98,15 +98,15 @@ while step ~= the_end
                 % check if method is selected.
                     % Key for PSS generator
                     key = 1682004; %TODO: make it an input
-                    % MATLAB PSS generator is set to init state def by the key 
+                    % MATLAB's pseudorandom number generator (PRNG) is set to init state def by the key 
                     rng(key);
-                    % PSS Permute the watermark
+                    % Permute the watermark
                     a1 = randperm(hw_wmark);
                     clear key; % delete key
                     a2 = reshape(a1, hdim_wmark, wdim_wmark);
 
                     scrambled_wmark = watermark(a2);
-                    scrambled_wmark_norm = (scrambled_wmark - 0.5)/0.5; % -1 i 1
+                    scrambled_wmark_norm = (scrambled_wmark - 0.5)/0.5; % % range [-1,1]
                     % scrambled_wmark_norm is type double
                     
                     file_name = 'Marked_image';
@@ -213,7 +213,7 @@ while step ~= the_end
             % check if watermark file/var is loaded.
                 if evalin( 'base', 'exist(''method'',''var'') == 1' )
                 % check if method is selected.
-                    % Key for PSS generator
+                    % Key for MATLAB's pseudorandom number generator (PRNG)
                     key = 1682004;
                     %key = input('\n Enter the password:   ');
                     rng(key);
