@@ -10,6 +10,12 @@
 
 > Digital Image processing
 
+### Table of Contents (Wiki)
+[Wiki Home](https://github.com/etfovac/watermark/wiki)  
+[Overview](https://github.com/etfovac/watermark/wiki/Overview)  
+[Notes](https://github.com/etfovac/watermark/wiki/Notes)  
+[Examples](https://github.com/etfovac/watermark/wiki/Examples)  
+[References](https://github.com/etfovac/watermark/wiki/References)  
 
 ## Basic Overview  
 Digital Watermarking (DWM) is a technique of protecting digital data. This code base implements 2 methods for marking digital images based on Discrete Cosine Transform (DCT) and Discrete Wavelet Transform (DWT).  
@@ -24,6 +30,10 @@ Robustness of DWT vs DCT is graded based on the quality of extracted watermark. 
 <img src="./graphics/DWT_Breakdown1.png" alt="DWT_Breakdown1" width="429" height="214"> <img src="./graphics/DWT_Breakdown2.png" alt="DWT_Breakdown2" width="434" height="213">  
 
 ### Using the App  
+See ```Main.mlx``` example file for simple Image Watermarking Procedure to control the program flow. It does not contain popup windows for selections, instead it has drop down selections.  
+Procedure steps are separated by sections that match the steps of the main menu in ```Main.m```.  
+Also, hardcoded input variables from ```Main.m``` are clearly marked in ```Main.mlx``` as numeric sliders.   
+
 <img src="./graphics/Main.png" alt="Main"> >> <img src="./graphics/MethodSelection.png" alt="MethodSelection"> >> <img src="./graphics/AttackSelection.png" alt="AttackSelection">  
 
 ### Example Log  
